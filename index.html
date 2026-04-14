@@ -11,8 +11,17 @@
   --bg:#0d1117;--surface:#161b22;--card:#1c2128;--border:#30363d;
   --accent:#4f8ef7;--accent-dim:#1f3a6e;--success:#3fb950;--danger:#f85149;
   --warning:#d29922;--text:#e6edf3;--muted:#8b949e;--radius:10px;
+  --success-bg:#0f2a1a;--danger-bg:#2a0f0f;
+  --modal-overlay:rgba(0,0,0,0.7);
 }
-body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:15px}
+[data-theme="light"]{
+  --bg:#ffffff;--surface:#f6f8fa;--card:#ffffff;--border:#d0d7de;
+  --accent:#0969da;--accent-dim:#ddf4ff;--success:#1a7f37;--danger:#cf222e;
+  --warning:#9a6700;--text:#1f2328;--muted:#656d76;
+  --success-bg:#dafbe1;--danger-bg:#ffebe9;
+  --modal-overlay:rgba(0,0,0,0.45);
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;font-size:15px;transition:background .2s,color .2s}
 .screen{display:none;min-height:100vh;padding:20px}
 .screen.active{display:block}
 
@@ -60,9 +69,9 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 .options{display:flex;flex-direction:column;gap:10px}
 .option-btn{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:14px 16px;text-align:left;font-size:0.9rem;cursor:pointer;transition:border-color .15s,background .15s;line-height:1.5;color:var(--text)}
 .option-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-dim)}
-.option-btn.selected-correct{border-color:var(--success);background:#0f2a1a;color:var(--success)}
-.option-btn.selected-wrong{border-color:var(--danger);background:#2a0f0f;color:var(--danger)}
-.option-btn.correct-answer{border-color:var(--success);background:#0f2a1a}
+.option-btn.selected-correct{border-color:var(--success);background:var(--success-bg);color:var(--success)}
+.option-btn.selected-wrong{border-color:var(--danger);background:var(--danger-bg);color:var(--danger)}
+.option-btn.correct-answer{border-color:var(--success);background:var(--success-bg)}
 .option-btn:disabled{cursor:default}
 .option-label{font-weight:700;margin-right:8px;opacity:.7}
 .feedback-card{background:var(--surface);border-left:4px solid var(--border);border-radius:0 8px 8px 0;padding:16px;margin-top:16px;font-size:0.88rem;line-height:1.6}
@@ -78,8 +87,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 #screen-results{max-width:820px;margin:0 auto}
 .results-header{text-align:center;padding:40px 0 30px}
 .results-badge{display:inline-block;padding:10px 30px;border-radius:30px;font-size:1.2rem;font-weight:800;margin-bottom:16px;letter-spacing:1px}
-.results-badge.aprobado{background:#0f2a1a;color:var(--success);border:2px solid var(--success)}
-.results-badge.reprobado{background:#2a0f0f;color:var(--danger);border:2px solid var(--danger)}
+.results-badge.aprobado{background:var(--success-bg);color:var(--success);border:2px solid var(--success)}
+.results-badge.reprobado{background:var(--danger-bg);color:var(--danger);border:2px solid var(--danger)}
 .results-score{font-size:3.5rem;font-weight:800;line-height:1}
 .results-score .pct{font-size:1.2rem;color:var(--muted)}
 .results-detail{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:24px 0;text-align:center}
@@ -123,12 +132,44 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 /* ── FLAG SYSTEM ── */
 .question-card{position:relative}
 .flag-btn{position:absolute;top:14px;right:14px;background:transparent;border:2px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:1rem;color:var(--muted);transition:border-color .15s,color .15s,background .15s;z-index:10;line-height:1}
-.flag-btn:hover{border-color:#f97316;color:#f97316}
+.flag-btn:hover:not(:disabled){border-color:#f97316;color:#f97316}
 .flag-btn.flagged{border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.15)}
+.flag-btn:disabled,.flag-btn.locked{cursor:not-allowed;opacity:.4;border-color:var(--border);color:var(--muted);background:transparent}
 .question-card.is-flagged{border-color:#f97316;box-shadow:0 0 0 2px rgba(249,115,22,0.25)}
 .tag.nivel-conceptual{background:#1a2a1a;color:#6bba6b}
 .tag.nivel-aplicacion{background:#1a1a2a;color:#6b8bba}
 .tag.nivel-analisis{background:#2a1a1a;color:#ba6b6b}
+[data-theme="light"] .tag.nivel-conceptual{background:#dafbe1;color:#1a7f37}
+[data-theme="light"] .tag.nivel-aplicacion{background:#ddf4ff;color:#0969da}
+[data-theme="light"] .tag.nivel-analisis{background:#ffebe9;color:#cf222e}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle{position:absolute;top:20px;right:20px;background:var(--card);border:1px solid var(--border);border-radius:30px;padding:6px 14px;cursor:pointer;font-size:0.8rem;font-weight:600;color:var(--text);display:inline-flex;align-items:center;gap:6px;transition:border-color .15s,background .15s}
+.theme-toggle:hover{border-color:var(--accent)}
+.home-header{position:relative}
+
+/* ── QUIZ NAVIGATOR ── */
+.quiz-navigator{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.quiz-navigator-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.quiz-navigator-legend{display:flex;gap:10px;font-size:0.68rem;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted);flex-wrap:wrap}
+.quiz-navigator-legend span{display:inline-flex;align-items:center;gap:4px}
+.quiz-navigator-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;border:1px solid var(--border)}
+.quiz-navigator-legend i.l-current{background:var(--accent);border-color:var(--accent)}
+.quiz-navigator-legend i.l-answered{background:var(--success);border-color:var(--success)}
+.quiz-navigator-legend i.l-flagged{background:#f97316;border-color:#f97316}
+.quiz-navigator-legend i.l-pending{background:var(--surface)}
+.quiz-navigator-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:6px}
+.qnav-btn{aspect-ratio:1;min-height:34px;background:var(--surface);border:1.5px solid var(--border);border-radius:6px;color:var(--text);font-size:0.78rem;font-weight:700;cursor:pointer;transition:transform .1s,border-color .15s;padding:0;font-family:inherit}
+.qnav-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.qnav-btn.answered{background:var(--success);border-color:var(--success);color:#fff}
+.qnav-btn.flagged{background:rgba(249,115,22,0.15);border-color:#f97316;color:#f97316}
+.qnav-btn.current{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 2px var(--accent-dim)}
+.qnav-btn.current.answered{background:var(--accent);border-color:var(--accent);color:#fff}
+@media(max-width:600px){
+  .quiz-navigator-grid{grid-template-columns:repeat(auto-fill,minmax(32px,1fr));gap:5px}
+  .qnav-btn{min-height:30px;font-size:0.7rem}
+  .theme-toggle{position:static;margin-top:10px}
+}
 </style>
 </head>
 <body>
@@ -152,6 +193,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 <!-- ══════════════ PANTALLA INICIO ══════════════ -->
 <div id="screen-home" class="screen active">
   <div class="home-header">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambiar entre modo claro y oscuro">
+      <span id="theme-toggle-icon">🌙</span>
+      <span id="theme-toggle-label">Modo oscuro</span>
+    </button>
     <h1>Simulador Examen AMV</h1>
     <p>Asesor Financiero — Preparación para la certificación</p>
   </div>
@@ -184,6 +229,19 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
   </div>
   <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
 
+  <div class="quiz-navigator" id="quiz-navigator">
+    <div class="quiz-navigator-title">
+      <span>Navegación rápida</span>
+      <span class="quiz-navigator-legend">
+        <span><i class="l-current"></i>Actual</span>
+        <span><i class="l-answered"></i>Respondida</span>
+        <span><i class="l-flagged"></i>Marcada</span>
+        <span><i class="l-pending"></i>Pendiente</span>
+      </span>
+    </div>
+    <div class="quiz-navigator-grid" id="quiz-navigator-grid"></div>
+  </div>
+
   <div class="question-card" id="question-card">
     <button class="flag-btn" id="flag-btn" onclick="toggleFlag()" title="Marcar/Desmarcar para revisión">🚩</button>
     <div class="question-num" id="question-num"></div>
@@ -201,7 +259,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 </div>
 
 <!-- ══════════════ MODAL FLAGGED WARNING ══════════════ -->
-<div id="flag-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;">
+<div id="flag-modal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:1000;align-items:center;justify-content:center;">
   <div style="background:var(--card);border:1px solid #f97316;border-radius:12px;padding:28px;max-width:400px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.5)">
     <div style="font-size:1.8rem;margin-bottom:12px">🚩</div>
     <div id="flag-modal-msg" style="font-weight:600;font-size:0.95rem;margin-bottom:20px;line-height:1.5"></div>
@@ -5449,10 +5507,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     "nivel": "análisis",
     "pregunta": "¿En qué circunstancias el proyecto de ATA debe enviarse a la Sala de Revisión para su estudio?",
     "opciones": [
-      "Siempre, en todos los casos sin excepción",
+      "Siempre, en todos los casos sin excepción, como requisito formal de validez de cualquier Acuerdo de Terminación Anticipada que se celebre en el marco del proceso disciplinario previsto en el Reglamento de AMV.",
       "Cuando la sanción acordada es superior a la señalada para procesos abreviados y directos, o cuando la solicitud se presenta después de formulado el pliego de cargos",
-      "Solo cuando el imputado es una persona jurídica",
-      "Únicamente cuando la sanción acordada incluye expulsión del mercado"
+      "Solo cuando el imputado es una persona jurídica, por tratarse de un sujeto con capacidad disciplinaria diferenciada respecto de las personas naturales vinculadas al miembro autorregulado en el proceso.",
+      "Únicamente cuando la sanción acordada incluye expulsión del mercado, dado el impacto material que esta medida tiene sobre la permanencia del sancionado en el sector del mercado de valores."
     ],
     "respuesta": 1,
     "explicacion": "La guía señala que 'si la sanción acordada es superior a la señalada o se presenta la solicitud después de formulado el pliego de cargos, el proyecto de acuerdo firmado por el investigado o imputado debe enviarse a la Sala de revisión para que lo estudie y evalúe la proporcionalidad de la sanción frente a las infracciones reconocidas por el investigado o imputado.'",
@@ -5545,10 +5603,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     "nivel": "aplicación",
     "pregunta": "¿Bajo qué condiciones puede un miembro autorregulado (persona jurídica) participar en el programa de beneficios por colaboración denunciando a sus propias PNV?",
     "opciones": [
-      "Siempre que el monto de la posible sanción supere las 1.000 UVT",
+      "Siempre que el monto de la posible sanción supere las 1.000 UVT, conforme a los parámetros generales de cuantía previstos en el Reglamento de AMV, bajo aprobación expresa del Tribunal Disciplinario en cada caso concreto y con notificación previa a la Superintendencia Financiera antes de activar el régimen de colaboración.",
       "Cuando las PNV actuaron de manera autónoma sin autorización de superiores, no estén involucrados el presidente ni órganos colegiados, se adoptaron medidas de protección a clientes afectados, el miembro se compromete a adoptar medidas correctivas y presta toda la colaboración requerida",
-      "Solo si el miembro ya fue sancionado previamente por los mismos hechos",
-      "Únicamente en procesos abreviados; en procesos generales los miembros no pueden ser colaboradores"
+      "Solo si el miembro ya fue sancionado previamente por los mismos hechos y acredita haber implementado programas integrales de cumplimiento normativo, sistemas de control interno y capacitaciones específicas con posterioridad a la imposición de dicha sanción original.",
+      "Únicamente en procesos abreviados, por cuanto en procesos generales los miembros no pueden participar como colaboradores bajo el régimen previsto en el Reglamento de AMV dada la mayor gravedad de las conductas allí investigadas y el impacto reputacional asociado."
     ],
     "respuesta": 1,
     "explicacion": "Según el artículo 53.3 del Reglamento de AMV citado en la guía, las condiciones para que los miembros puedan participar como colaboradores al denunciar a sus PNV incluyen: que las PNV actuaron de manera autónoma sin autorización, que no están involucrados el presidente ni órganos colegiados, que se adoptaron medidas de protección a clientes, que el miembro se comprometa a adoptar medidas correctivas y que preste toda la colaboración requerida.",
@@ -5737,10 +5795,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     "nivel": "conceptual",
     "pregunta": "¿Puede redimirse la sanción de expulsión? ¿Bajo qué condiciones según la guía?",
     "opciones": [
-      "No, la expulsión es definitiva e irredimible",
+      "No, la expulsión es definitiva e irredimible, por tratarse de la máxima sanción prevista en el régimen disciplinario de AMV para las conductas de alto impacto y sobre la cual el Reglamento no contempla ningún mecanismo posterior de rehabilitación del sancionado.",
       "Sí, después de transcurridos veinte (20) años desde que la sanción queda en firme, solicitando la admisión y acreditando los requisitos para obtener la certificación correspondiente",
-      "Sí, después de 5 años si el sancionado demuestra buen comportamiento",
-      "Sí, en cualquier momento si la SFC lo autoriza expresamente"
+      "Sí, después de 5 años si el sancionado demuestra buen comportamiento ante el mercado, acredita ante AMV la adopción de medidas correctivas y obtiene aval expreso del Tribunal Disciplinario sobre su actividad profesional posterior.",
+      "Sí, en cualquier momento si la SFC lo autoriza expresamente mediante acto administrativo motivado que justifique el levantamiento anticipado de la sanción frente a las circunstancias particulares del caso."
     ],
     "respuesta": 1,
     "explicacion": "La guía señala que 'la sanción de expulsión puede redimirse después de transcurridos veinte (20) años contados desde cuando la sanción queda en firme; en tal caso, la persona sancionada puede solicitar la admisión acreditando los requisitos para obtener la certificación que corresponda.'",
@@ -5881,10 +5939,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     "nivel": "aplicación",
     "pregunta": "Un intermediario utiliza los valores de un cliente para garantizar operaciones propias de la SCB. ¿Qué deber viola según la guía?",
     "opciones": [
-      "El deber de mejor ejecución de las operaciones",
+      "El deber de mejor ejecución de las operaciones, que obliga al intermediario a procurar las condiciones más favorables de precio y oportunidad al ejecutar las órdenes de sus clientes.",
       "El deber de separación de activos: el intermediario en ningún caso puede utilizar los recursos de los clientes para cumplir o garantizar las operaciones por cuenta propia",
-      "El deber de asesoría profesional",
-      "El deber de documentación de órdenes"
+      "El deber de asesoría profesional, según el cual el intermediario debe brindar recomendaciones individualizadas a sus clientes considerando su perfil de riesgo y los productos ofrecidos.",
+      "El deber de documentación de órdenes, que exige el registro por medios verificables de las instrucciones recibidas del cliente y de su posterior ejecución."
     ],
     "respuesta": 1,
     "explicacion": "El artículo 41 del Reglamento de AMV citado en la guía establece que 'el intermediario en ningún caso puede utilizar tales recursos para cumplir o garantizar las operaciones por cuenta propia, por cuenta de otros terceros ni para cualquier otro fin no autorizado expresamente por el cliente.' Dicha norma también indica que es una infracción violar las normas relacionadas con la separación patrimonial.",
@@ -5945,10 +6003,10 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
     "nivel": "conceptual",
     "pregunta": "¿Cuáles son los tres elementos objetivos que requiere la conducta defraudatoria según la Resolución 19 del 10 de diciembre de 2015 del Tribunal Disciplinario de AMV?",
     "opciones": [
-      "Dolo, perjuicio y nexo causal",
+      "Dolo, perjuicio y nexo causal, como los tres elementos propios de la responsabilidad civil extracontractual del derecho común que pueden aplicarse a operaciones realizadas en el mercado de valores colombiano.",
       "La obtención de un provecho indebido, la afectación a un tercero o al mercado, y que la conducta tenga lugar en desarrollo de operaciones o actividades de intermediación",
-      "Manipulación, engaño y lucro",
-      "Información privilegiada, operación en el mercado y beneficio propio"
+      "Manipulación del precio del activo transado, engaño a la contraparte en la operación y obtención de un lucro indebido por parte del sujeto infractor en perjuicio de otros participantes del mercado.",
+      "Conocimiento previo de información privilegiada, realización de operaciones en el mercado con base en dicha información y obtención de beneficio propio o para terceros vinculados al sujeto infractor."
     ],
     "respuesta": 1,
     "explicacion": "La guía cita la Resolución 19 del 10 de diciembre de 2015 de la Sala de Decisión 2 del Tribunal Disciplinario: 'para la configuración de la conducta defraudatoria se requiere la concurrencia de tres elementos objetivos: 1. la obtención de un provecho indebido para el infractor o para un tercero, 2. la afectación a un tercero o al mercado, y 3. que la conducta tenga lugar en desarrollo de operaciones o actividades de intermediación.'",
@@ -20887,6 +20945,35 @@ function resetAll(){
 }
 
 // ══════════════════════════════════════════════════
+//  TEMA CLARO / OSCURO
+// ══════════════════════════════════════════════════
+function applyTheme(theme){
+  if(theme==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  var icon=document.getElementById('theme-toggle-icon');
+  var label=document.getElementById('theme-toggle-label');
+  if(icon&&label){
+    if(theme==='light'){ icon.textContent='☀️'; label.textContent='Modo claro'; }
+    else { icon.textContent='🌙'; label.textContent='Modo oscuro'; }
+  }
+}
+function loadTheme(){
+  var theme='dark';
+  try{ theme=localStorage.getItem('amv_theme')||'dark'; }catch(e){}
+  applyTheme(theme);
+}
+function toggleTheme(){
+  var current='dark';
+  try{ current=localStorage.getItem('amv_theme')||'dark'; }catch(e){}
+  var next=current==='light'?'dark':'light';
+  try{ localStorage.setItem('amv_theme',next); }catch(e){}
+  applyTheme(next);
+}
+
+// ══════════════════════════════════════════════════
 //  SELECCIÓN DE PREGUNTAS (anti-repetición)
 // ══════════════════════════════════════════════════
 function selectQuestions(moduloKey, count){
@@ -21102,6 +21189,50 @@ function showQuestion(){
   const isFlagged = STATE.marcadas.has(STATE.preguntaIdx);
   flagBtn.classList.toggle('flagged', isFlagged);
   questionCard.classList.toggle('is-flagged', isFlagged);
+  // Bloquear banderilla si la pregunta ya fue respondida
+  if(respPrevia){
+    flagBtn.disabled = true;
+    flagBtn.classList.add('locked');
+    flagBtn.title = 'No se puede marcar una pregunta ya respondida';
+  } else {
+    flagBtn.disabled = false;
+    flagBtn.classList.remove('locked');
+    flagBtn.title = 'Marcar/Desmarcar para revisión';
+  }
+
+  renderNavigator();
+}
+
+// ══════════════════════════════════════════════════
+//  PANEL DE NAVEGACIÓN ENTRE PREGUNTAS
+// ══════════════════════════════════════════════════
+function renderNavigator(){
+  const grid = document.getElementById('quiz-navigator-grid');
+  if(!grid) return;
+  const respMap = new Set();
+  STATE.respuestas.forEach(r => respMap.add(r.pregunta));
+  grid.innerHTML = '';
+  STATE.preguntas.forEach((q,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'qnav-btn';
+    btn.type = 'button';
+    btn.textContent = i+1;
+    const answered = respMap.has(q);
+    const flagged = STATE.marcadas.has(i);
+    if(answered) btn.classList.add('answered');
+    if(flagged) btn.classList.add('flagged');
+    if(i===STATE.preguntaIdx) btn.classList.add('current');
+    btn.title = `Pregunta ${i+1}${answered?' · respondida':flagged?' · marcada':' · pendiente'}`;
+    btn.onclick = ()=>irAPregunta(i);
+    grid.appendChild(btn);
+  });
+}
+
+function irAPregunta(idx){
+  if(idx<0 || idx>=STATE.preguntas.length) return;
+  if(idx===STATE.preguntaIdx) return;
+  STATE.preguntaIdx = idx;
+  showQuestion();
 }
 
 // ══════════════════════════════════════════════════
@@ -21147,11 +21278,18 @@ function selectAnswer(idx){
   // Si la pregunta estaba marcada con banderilla, quitarla al responder
   if(STATE.marcadas.has(STATE.preguntaIdx)){
     STATE.marcadas.delete(STATE.preguntaIdx);
-    const flagBtn = document.getElementById('flag-btn');
-    const questionCard = document.getElementById('question-card');
-    if(flagBtn) flagBtn.classList.remove('flagged');
-    if(questionCard) questionCard.classList.remove('is-flagged');
   }
+
+  // Bloquear botón de banderilla: una vez respondida no se puede volver a marcar
+  const flagBtn = document.getElementById('flag-btn');
+  const questionCard = document.getElementById('question-card');
+  if(flagBtn){
+    flagBtn.classList.remove('flagged');
+    flagBtn.disabled = true;
+    flagBtn.classList.add('locked');
+    flagBtn.title = 'No se puede marcar una pregunta ya respondida';
+  }
+  if(questionCard) questionCard.classList.remove('is-flagged');
 
   // Mostrar botón siguiente o finalizar; ocultar saltar
   document.getElementById('btn-skip').classList.add('hidden');
@@ -21160,6 +21298,11 @@ function selectAnswer(idx){
   } else {
     document.getElementById('btn-end').classList.remove('hidden');
   }
+
+  // Actualizar contador de correctas y panel de navegación
+  const correctas = STATE.respuestas.filter(r=>r.correcta).length;
+  document.getElementById('quiz-correctas').textContent = correctas;
+  renderNavigator();
 }
 
 // ══════════════════════════════════════════════════
@@ -21192,7 +21335,8 @@ function saltarPregunta(){
     STATE.preguntaIdx++;
     showQuestion();
   } else {
-    // Última pregunta sin responder → abrir confirmación
+    // Última pregunta sin responder → refrescar navegador y abrir confirmación
+    renderNavigator();
     confirmarFinalizar();
   }
 }
@@ -21202,6 +21346,10 @@ function saltarPregunta(){
 // ══════════════════════════════════════════════════
 function toggleFlag(){
   const idx = STATE.preguntaIdx;
+  // Bloqueo: no permitir marcar/desmarcar si la pregunta ya fue respondida
+  const q = STATE.preguntas[idx];
+  const yaRespondida = STATE.respuestas.some(r=>r.pregunta===q);
+  if(yaRespondida) return;
   if(STATE.marcadas.has(idx)){
     STATE.marcadas.delete(idx);
   } else {
@@ -21212,6 +21360,7 @@ function toggleFlag(){
   const isFlagged = STATE.marcadas.has(idx);
   flagBtn.classList.toggle('flagged', isFlagged);
   questionCard.classList.toggle('is-flagged', isFlagged);
+  renderNavigator();
 }
 
 // ══════════════════════════════════════════════════
@@ -21621,7 +21770,14 @@ function renderHome(){
 // ══════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════
+// Aplicar tema lo antes posible para evitar flash
+try{
+  var _savedTheme=localStorage.getItem('amv_theme');
+  if(_savedTheme==='light') document.documentElement.setAttribute('data-theme','light');
+}catch(e){}
+
 document.addEventListener('DOMContentLoaded', function(){
+  loadTheme();
   renderHome();
 });
 </script>
